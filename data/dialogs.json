@@ -1,0 +1,272 @@
+{
+  "nodes": [
+    {
+      "id": "intro_01",
+      "speaker": "narrador",
+      "text": "Don, agente de E-cofr, prueba el último producto de Day-Play en su casa.",
+      "next": "intro_02"
+    },
+    {
+      "id": "intro_02",
+      "speaker": "narrador",
+      "text": "Un clic. La habitación se disuelve. Está dentro del sistema.",
+      "next": "s1_start"
+    },
+    {
+      "id": "s1_start",
+      "speaker": "sistema",
+      "text": "Sector 1 — Entrada. Clasificación: archivo desconocido. Riesgo: alto.",
+      "next": "s1_arranque_01"
+    },
+    {
+      "id": "s1_arranque_01",
+      "speaker": "arranque_a",
+      "text": "¿Qué haces aquí, archivo no reconocido?",
+      "options": [
+        {
+          "text": "Soy Don, agente financiero. Necesito ayuda.",
+          "next": "s1_arranque_02a",
+          "trust_delta": { "arranque_a": 10, "arranque_b": 5 },
+          "set_flags": ["ayuda_aceptada"],
+          "decision_id": "PD-1",
+          "option_id": "aceptar"
+        },
+        {
+          "text": "No sé dónde estoy. ¿Me explicas este lugar?",
+          "next": "s1_arranque_02b",
+          "trust_delta": { "arranque_a": 20, "arranque_b": 15 },
+          "set_flags": ["ayuda_aceptada"],
+          "decision_id": "PD-1",
+          "option_id": "preguntar"
+        },
+        {
+          "text": "[Silencio]… (acepto el riesgo)",
+          "next": "s1_arranque_02c",
+          "trust_delta": { "arranque_a": -10, "arranque_b": -5 },
+          "set_flags": ["ayuda_ignorada", "silencio_inicial"],
+          "decision_id": "PD-1",
+          "option_id": "ignorar"
+        }
+      ]
+    },
+    {
+      "id": "s1_arranque_02a",
+      "speaker": "arranque_a",
+      "text": "Un agente… interesante. Aquí todo tiene vida. Tú no perteneces.",
+      "next": "s1_arranque_03"
+    },
+    {
+      "id": "s1_arranque_02b",
+      "speaker": "arranque_a",
+      "text": "OpenCulin. Ciudad de programas. El Consejo de los OS no tolera anomalías.",
+      "next": "s1_arranque_03"
+    },
+    {
+      "id": "s1_arranque_02c",
+      "speaker": "arranque_a",
+      "text": "El silencio también es una respuesta. El Consejo ya te busca.",
+      "next": "s1_arranque_03"
+    },
+    {
+      "id": "s1_arranque_03",
+      "speaker": "arranque_b",
+      "text": "Si quieres sobrevivir, aprende a esconderte. Usa [E] cerca de zonas verdes.",
+      "next": "s1_arranque_04"
+    },
+    {
+      "id": "s1_arranque_04",
+      "speaker": "arranque_a",
+      "text": "Hay un sector de archivos residuales más adelante. Allí verás la verdad.",
+      "next": "s1_tutorial"
+    },
+    {
+      "id": "s1_tutorial",
+      "speaker": "sistema",
+      "text": "Controles: WASD mover · Shift correr · E interactuar · Esc pausa.",
+      "next": "s1_end_dialog"
+    },
+    {
+      "id": "s1_end_dialog",
+      "speaker": "arranque_b",
+      "text": "Ve a la salida del sector. El Consejo se acerca… ¡corre!",
+      "set_flags": ["sector1_dialog_done"]
+    },
+    {
+      "id": "s1_capture_warn",
+      "speaker": "sistema",
+      "text": "¡Centinela detectado! Escóndete o serás capturado."
+    },
+    {
+      "id": "s2_entry",
+      "speaker": "sistema",
+      "text": "Sector 2 — Archivos residuales. Aquí lo borrado… sigue vivo.",
+      "next": "s2_intro_router"
+    },
+    {
+      "id": "s2_intro_router",
+      "speaker": "sistema",
+      "text": "Observa dos capas: el índice de archivos y las celdas físicas del disco.",
+      "next": "s2_intro_help"
+    },
+    {
+      "id": "s2_intro_help",
+      "speaker": "arranque_a",
+      "requires_flags": ["ayuda_aceptada"],
+      "text": "Te ayudamos. Los archivos «eliminados» aún están en las celdas. Examínalos.",
+      "next": "s2_puzzle_start"
+    },
+    {
+      "id": "s2_intro_help_alt",
+      "speaker": "sistema",
+      "text": "Sin aliados cercanos. Descubre por ti mismo por qué lo borrado sigue visible.",
+      "next": "s2_puzzle_start"
+    },
+    {
+      "id": "s2_puzzle_start",
+      "speaker": "sistema",
+      "text": "Interactúa con un archivo residual (naranja) o con el terminal firmware (violeta).",
+      "set_flags": ["puzzle_activo"]
+    },
+    {
+      "id": "s2_file_talk",
+      "speaker": "archivo_residual",
+      "text": "Me «borraron». El índice me olvidó. Pero yo sigo en la celda.",
+      "next": "s2_pd2"
+    },
+    {
+      "id": "s2_pd2",
+      "speaker": "sistema",
+      "text": "¿Cómo proceder con los datos residuales?",
+      "options": [
+        {
+          "text": "Sobrescribir con ceros (método clásico)",
+          "next": "s2_overwrite",
+          "set_flags": ["pd2_overwrite"],
+          "decision_id": "PD-2",
+          "option_id": "sobrescribir"
+        },
+        {
+          "text": "Usar comando de firmware (genérico)",
+          "next": "s2_firmware",
+          "set_flags": ["pd2_firmware", "puzzle_resuelto"],
+          "decision_id": "PD-2",
+          "option_id": "firmware"
+        }
+      ]
+    },
+    {
+      "id": "s2_overwrite",
+      "speaker": "sistema",
+      "text": "Sobrescribes… El archivo cambia de celda. La capa FTL redirigió la escritura.",
+      "next": "s2_edu_msg"
+    },
+    {
+      "id": "s2_firmware",
+      "speaker": "sistema",
+      "text": "El comando de firmware alcanza las celdas reales. El rastro se limpia de verdad.",
+      "next": "s2_edu_msg"
+    },
+    {
+      "id": "s2_edu_msg",
+      "speaker": "narrador",
+      "text": "Borrar quita la referencia, no el contenido. En SSD la FTL puede engañar. Hace falta método y evidencia.",
+      "set_flags": ["concepto_explicado"],
+      "next": "s2_exit"
+    },
+    {
+      "id": "s2_exit",
+      "speaker": "arranque_b",
+      "requires_flags": ["ayuda_aceptada"],
+      "text": "Bien hecho. El atajo está abierto. Ve al núcleo BIOS.",
+      "set_flags": ["sector2_done"]
+    },
+    {
+      "id": "s2_exit_alt",
+      "speaker": "sistema",
+      "requires_flags": ["ayuda_ignorada"],
+      "text": "Sector 2 completado. Continúa hacia el núcleo BIOS.",
+      "set_flags": ["sector2_done"]
+    },
+    {
+      "id": "s3_entry",
+      "speaker": "sistema",
+      "text": "Sector 3 — Núcleo BIOS. Autoridad suprema del sistema.",
+      "next": "s3_elena"
+    },
+    {
+      "id": "s3_elena",
+      "speaker": "elena",
+      "text": "Don… te oigo desde fuera. Elige con cuidado. Tu rastro queda.",
+      "next": "s3_bios_01"
+    },
+    {
+      "id": "s3_bios_01",
+      "speaker": "bios",
+      "text": "Anomalía. Has llegado hasta aquí. Tres caminos. Solo uno será juzgado.",
+      "next": "s3_pd3"
+    },
+    {
+      "id": "s3_pd3",
+      "speaker": "bios",
+      "text": "¿Cuál es tu decisión final?",
+      "options": [
+        {
+          "text": "Destruir el rastro (borrado criptográfico)",
+          "next": "final_destruir",
+          "set_flags": ["ending_destroy"],
+          "decision_id": "PD-3",
+          "option_id": "destruir"
+        },
+        {
+          "text": "Rescatar los datos para E-cofr",
+          "next": "final_rescatar",
+          "set_flags": ["ending_rescue"],
+          "decision_id": "PD-3",
+          "option_id": "rescatar"
+        },
+        {
+          "text": "Escapar con Elena (dejar el sistema)",
+          "next": "final_escapar",
+          "set_flags": ["ending_escape"],
+          "decision_id": "PD-3",
+          "option_id": "escapar"
+        }
+      ]
+    },
+    {
+      "id": "final_destruir",
+      "speaker": "bios",
+      "text": "Borrado criptográfico iniciado. El núcleo se apaga. No hay vuelta atrás.",
+      "set_flags": ["ending_reached"]
+    },
+    {
+      "id": "final_rescatar",
+      "speaker": "bios",
+      "text": "Datos copiados. Sales con el botín… y con un rastro verificable.",
+      "set_flags": ["ending_reached"]
+    },
+    {
+      "id": "final_escapar",
+      "speaker": "elena",
+      "text": "Vuelve. El sistema queda intacto. Lo que no se sanitiza… permanece.",
+      "set_flags": ["ending_reached"]
+    },
+    {
+      "id": "capture_msg",
+      "speaker": "sistema",
+      "text": "Capturado. Reapareces en el último checkpoint. Decisiones conservadas."
+    }
+  ],
+  "educational": {
+    "concepto_referencia": "Cuando «borras» un archivo y vacías la papelera, en la mayoría de casos solo desaparece la referencia. El contenido sigue en el disco hasta que se sobrescribe o se sanitiza de verdad.",
+    "concepto_ssd": "En un SSD la capa FTL (Flash Translation Layer) redirige escrituras. Sobrescribir con ceros puede no tocar las celdas físicas reales donde viven los datos.",
+    "concepto_metodo_evidencia": "Borrar bien exige el método adecuado al medio (firmware, criptográfico, etc.) y evidencia demostrable de que se realizó. Sin evidencia, no hay garantía.",
+    "mensaje_puzzle_resuelto": "Has visto que el índice y las celdas no son lo mismo. Sobrescribir no siempre basta. Hace falta un método que alcance el medio físico y deje rastro verificable.",
+    "certificados": {
+      "destroy": "Certificado de final: Destruir el rastro. Borrado criptográfico irreversible. Hash de cadena de decisiones incluido.",
+      "rescue": "Certificado de final: Rescatar datos. Información recuperada para E-cofr. Rastro de decisiones verificable.",
+      "escape": "Certificado de final: Escapar. Sistema intacto. Evidencia de que lo no sanitizado permanece."
+    },
+    "cta_final": "¿Cómo se borra de verdad? Conoce ArcasShred Pro."
+  }
+}

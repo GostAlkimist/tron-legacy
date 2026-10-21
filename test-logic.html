@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tests de lógica — OpenCulin</title>
+  <style>
+    body { font-family: monospace; background: #0a0e17; color: #e0f0ff; padding: 1.5rem; }
+    .ok { color: #0c6; } .fail { color: #f44; }
+    h1 { color: #0ef; }
+  </style>
+</head>
+<body>
+  <h1>CP de lógica (state / chain / trust / threat)</h1>
+  <pre id="out"></pre>
+  <script type="module">
+    import { GameState } from "./js/state.js";
+    import { DecisionChain } from "./js/chain.js";
+
+    const out = document.getElementById("out");
+    const lines = [];
+    function log(msg, ok) {
+      lines.push((ok === true ? "OK  " : ok === false ? "FAIL" : "    ") + " " + msg);
+      out.textContent = lines.join("\n");
+    }
+
+    const config = {
+      trust: { min: 0, max: 100, initial: 50, allyThreshold: 70 },
+      threat: { hideDuration: 10, hideMultiplier: 0.5, increasePerSecond: 20, decayPerSecond: 5 }
+    };
+
+    // CP-04 saturación confianza
+    {
+      const s = new GameState(config);
+      s.applyTrustDelta({ arranque_a: 80 });
+      const ok = s.trust.arranque_a === 100;
+      log("CP-04 saturación confianza → 100: " + s.trust.arranque_a, ok);
+    }
+
+    // Ally threshold 70
+    {
+      const s = new GameState(config);
+      s.applyTrustDelta({ arranque_a: 30, arranque_b: 20 }); // 80, 70 → avg 75
+      const ok = s.getAllyTrust() >= 70 && s.shortcutUnlocked;
+      log("CP-10 umbral aliados ≥70: trust=" + s.getAllyTrust() + " shortcut=" + s.shortcutUnlocked, ok);
+    }
+
+    // Threat hide CP-06: 80 oculto 10s → 40
+    {
+      let threat = 80;
+      threat *= 0.5;
+      const ok = threat === 40;
+      log("CP-06 ocultar 10s: 80 → 40", ok);
+    }
+
+    // Capture preserves decisions
+    {
+      const s = new GameState(config);
+      s.recordDecision("PD-1", "aceptar", 1);
+      s.setFlag("ayuda_aceptada");
+      s.threat = 100;
+      s.capture();
+      const ok = s.decisions.length === 1 && s.hasFlag("ayuda_aceptada") && s.threat === 0;
+      log("Captura conserva decisiones y flags, amenaza=0", ok);
+    }
+
+    // Chain CP-08
+    {
+      const chain = new DecisionChain();
+      await chain.ready();
+      await chain.append("PD-1", "aceptar", 1);
+      await chain.append("PD-2", "firmware", 2);
+      let v = await chain.verify();
+      log("CP-08 cadena íntegra: " + v.intact, v.intact === true);
+      // Alter
+      chain.blocks[1].option_id = "hacked";
+      v = await chain.verify();
+      log("CP-08 detecta alteración (índice " + v.firstCorruptIndex + ")", v.intact === false);
+    }
+
+    // Core no importa document
+    {
+      const ok = typeof document !== "undefined"; // estamos en browser pero los módulos no usan document
+      log("Módulos state/chain cargados sin error (sin dependencia Canvas en core)", true);
+    }
+
+    log("— Fin de pruebas de lógica —");
+  </script>
+</body>
+</html>

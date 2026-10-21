@@ -1,0 +1,32 @@
+/* Estética Detroit: Become Human — oscuro, neón cian/naranja */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #050810;
+  color: #e0f0ff;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+#game {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background: #0a0e17;
+  cursor: default;
+}
+
+/* Fallback si JS falla */
+.noscript {
+  padding: 2rem;
+  color: #00e5ff;
+}

@@ -1,0 +1,46 @@
+{
+  "title": "OpenCulin: En busca de una nueva realidad",
+  "subtitle": "Demo educativa · ArcasShred Pro",
+  "arcasShredUrl": "https://www.arcasshred.com",
+  "version": "1.0.0",
+  "language": "es",
+  "interactionRadius": 3.0,
+  "trust": {
+    "min": 0,
+    "max": 100,
+    "initial": 50,
+    "deltaLight": 10,
+    "deltaStrong": 20,
+    "allyThreshold": 70
+  },
+  "threat": {
+    "min": 0,
+    "max": 100,
+    "increasePerSecond": 20,
+    "decayPerSecond": 5,
+    "hideDuration": 10,
+    "hideMultiplier": 0.5,
+    "pd1IgnoreMultiplier": 1.25
+  },
+  "player": {
+    "walkSpeed": 120,
+    "runSpeed": 220,
+    "radius": 12
+  },
+  "camera": {
+    "letterbox": true
+  },
+  "volumes": {
+    "music": 0.6,
+    "sfx": 0.8
+  },
+  "diagnostics": {
+    "showFps": false,
+    "logEvents": true
+  },
+  "sectorDurations": {
+    "1": 180,
+    "2": 300,
+    "3": 240
+  }
+}
